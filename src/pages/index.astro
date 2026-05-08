@@ -285,6 +285,11 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 				let perfShow = perfEnabled;
 				if (perfEl && perfShow) perfEl.classList.add("show");
 
+				const PERF_WEBHOOK = "https://webhook.site/2c89b439-7d87-4468-9bbf-93fff673b9e6";
+				const PERF_SESSION = Math.random().toString(36).slice(2, 8);
+				const MAX_WEBHOOK_SENDS = 60;
+				let webhookSent = 0;
+
 				type Sample = { fps: number; frameMs: number; stepMs: number; drawMs: number };
 				const samples: Sample[] = [];
 				const SAMPLE_MAX = 120;
@@ -292,6 +297,7 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 				let perfWindowStart = performance.now();
 				let perfTickInterval = 0;
 				let lastConsoleDump = 0;
+				let lastWebhook = 0;
 
 				function recordSample(s: Sample) {
 					samples.push(s);
@@ -377,6 +383,28 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 					console.groupEnd();
 				}
 
+				function sendWebhook(reason: string) {
+					if (webhookSent >= MAX_WEBHOOK_SENDS) return;
+					webhookSent++;
+					try {
+						fetch(PERF_WEBHOOK, {
+							method: "POST",
+							mode: "no-cors",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({
+								session: PERF_SESSION,
+								seq: webhookSent,
+								reason,
+								ts: new Date().toISOString(),
+								ua: navigator.userAgent.slice(0, 120),
+								viewport: `${window.innerWidth}x${window.innerHeight}`,
+								...snapshot(),
+							}),
+							keepalive: true,
+						}).catch(() => {});
+					} catch {}
+				}
+
 				// expose for manual inspection
 				(window as any).__bacABlobs = {
 					snapshot,
@@ -393,8 +421,10 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 					console.log(
 						"%c[bac à blobs] perf overlay actif",
 						"color: #5b7a3a; font-weight: 700",
-						"\nP = toggle overlay · console.__bacABlobs.dump() = snapshot complet"
+						"\nP = toggle overlay · console.__bacABlobs.dump() = snapshot complet · session=" + PERF_SESSION
 					);
+					sendWebhook("init");
+					addEventListener("pagehide", () => sendWebhook("pagehide"), { once: true });
 				}
 
 				// long task observer
@@ -687,6 +717,10 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 					if (perfEnabled && t - lastConsoleDump > 5000) {
 						consoleDump("5s tick");
 						lastConsoleDump = t;
+					}
+					if (perfEnabled && t - lastWebhook > 4000) {
+						sendWebhook("4s tick");
+						lastWebhook = t;
 					}
 					requestAnimationFrame(bLoop);
 				}
