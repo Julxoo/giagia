@@ -1,17 +1,1334 @@
 ---
+const title = "LE MJSFG";
+const tagline = "le seul, l'unique.";
+const baseline = "agence de rien · deux associés · un bac à blobs.";
 
+const associes = [
+	{ num: "n°1", nom: "matteo", role: "regard pensif", quote: "on a réfléchi, c'est non.", base: "/associe-1" },
+	{ num: "n°2", nom: "jean serge françois", role: "cravate rose · vp blobs", quote: "je préfère ne pas.", base: "/associe-2" },
+];
+
+const sagesses = [
+	{ text: "l'importance c'est l'essentiel, c'est ça le principal.", style: "stamp" },
+	{ text: "y'a qu'ensemble qu'on sera plusieurs.", style: "torn" },
+	{ text: "quand on entend ce qu'on entend, et qu'on voit ce qu'on voit, bah on a bien raison de penser ce qu'on pense.", style: "longue" },
+	{ text: "vaut mieux qu'il pleuve aujourd'hui qu'un jour où il fait beau.", style: "carnet" },
+	{ text: "dorénavant, ça sera comme d'habitude.", style: "post-it" },
+	{ text: "l'impôt, c'est comme le gibier, c'est prélevé.", style: "sticker", hashtag: "#sujetquifâche" },
+];
+
+// 200x200 SVG noise tile (rendered once by the browser, tiled)
+const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.22 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`;
 ---
 
-<html lang="en">
+<html lang="fr">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="theme-color" content="#efe6d0" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<meta name="description" content="le mjsfg — agence de rien. matteo & jean serge françois, et un bac à blobs." />
+		<title>{title} · agence de rien</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Caveat:wght@500;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="preload" as="image" type="image/webp" href={`${associes[0].base}-sm.webp`} />
+		<link rel="preload" as="image" type="image/webp" href={`${associes[1].base}-sm.webp`} />
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<svg class="bg-blobs" aria-hidden="true" preserveAspectRatio="none">
+			<defs>
+				<filter id="goo">
+					<feGaussianBlur in="SourceGraphic" stdDeviation="22" />
+					<feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10" />
+				</filter>
+			</defs>
+			<g filter="url(#goo)">
+				<circle class="bg-blob bb1" cx="22%" cy="28%" r="170" />
+				<circle class="bg-blob bb2" cx="78%" cy="62%" r="210" />
+				<circle class="bg-blob bb3" cx="48%" cy="88%" r="150" />
+				<circle class="bg-blob bb4" cx="86%" cy="18%" r="115" />
+			</g>
+		</svg>
+
+		<div class="grain" aria-hidden="true" style={`background-image:${grainURI}`}></div>
+
+		<main>
+			<section class="hero">
+				<h1 class="riso" id="hero-title" data-text={title}>{title}</h1>
+				<p class="tagline">{tagline}</p>
+				<p class="baseline">{baseline}</p>
+			</section>
+
+			<section class="bubble-play">
+				<header class="sec-head">
+					<h2 class="riso riso-md" data-text="bac à blobs">bac à blobs</h2>
+					<p class="sub">les lettres reviennent toujours. on s'y fait.</p>
+				</header>
+				<div class="canvas-wrap">
+					<canvas id="bubble-canvas"></canvas>
+					<pre class="perf-overlay" id="perf-overlay" aria-hidden="true"></pre>
+				</div>
+				<p class="hint">
+					<span class="kbd">tap vide</span> spawn
+					<span class="sep">·</span>
+					<span class="kbd">drag</span> lance
+					<span class="sep">·</span>
+					<span class="kbd">long-press</span> pop
+					<span class="sep">·</span>
+					<span class="kbd">double-tap</span> secoue
+				</p>
+			</section>
+
+			<section class="wisdom">
+				<header class="sec-head">
+					<h2 class="riso riso-md" data-text="sagesses">sagesses</h2>
+					<p class="sub">le mjsfg pense. parfois beaucoup. souvent rien.</p>
+				</header>
+				<div class="wisdom-grid">
+					{sagesses.map((s, i) => (
+						<div class={`wisdom-card w-${s.style} w-${i}`}>
+							<p>{s.text}</p>
+							{s.hashtag && <span class="hashtag">{s.hashtag}</span>}
+						</div>
+					))}
+				</div>
+			</section>
+
+			<section class="duo">
+				<header class="sec-head">
+					<h2 class="riso riso-md" data-text="les associés">les associés</h2>
+					<p class="sub">deux personnes <em>distinctes</em>, jamais vues ensemble.</p>
+				</header>
+
+				<div class="duo-grid">
+					{associes.map((a, i) => (
+						<figure class={`associe associe-${i}`}>
+							<div class="polaroid" data-tilt>
+								<span class="washi" aria-hidden="true"></span>
+								<div class="frame" data-frame>
+									<picture class="frame-photo">
+										<source
+											type="image/webp"
+											srcset={`${a.base}-sm.webp 600w, ${a.base}.webp 1200w`}
+											sizes="(max-width: 720px) 260px, 320px"
+										/>
+										<img
+											src={`${a.base}.jpg`}
+											srcset={`${a.base}-sm.jpg 600w, ${a.base}.jpg 1200w`}
+											sizes="(max-width: 720px) 260px, 320px"
+											width="1200"
+											height="1600"
+											decoding="async"
+											alt={`${a.nom}, ${a.role}`}
+										/>
+									</picture>
+									<div class="riso-overlay" aria-hidden="true"></div>
+									<div class="stamp" aria-hidden="true">{a.num}</div>
+								</div>
+								<div class="caption-card">
+									<h3>{a.nom}</h3>
+									<p class="role">{a.role}</p>
+								</div>
+							</div>
+							<figcaption class="quote">« {a.quote} »</figcaption>
+						</figure>
+					))}
+				</div>
+			</section>
+
+			<footer class="footer">
+				<span class="bubble-tag" id="footer-tag">LE MJSFG · 2026</span>
+				<p class="footer-counter">
+					clics au compteur : <span id="click-count">0</span>
+				</p>
+			</footer>
+		</main>
+
+		<script>
+			const colors = ["#5b7a3a", "#3f5a26", "#7a9c4f", "#e3d6b4", "#2a2a26"];
+			let confettiLib: any = null;
+			async function loadConfetti() {
+				if (!confettiLib) {
+					const mod = await import("canvas-confetti");
+					confettiLib = mod.default;
+				}
+				return confettiLib;
+			}
+
+			// ===== UI bits =====
+			const heroTitle = document.getElementById("hero-title");
+			let clickCount = 0;
+			const clickCountEl = document.getElementById("click-count");
+
+			async function popAt(x: number, y: number, count = 22) {
+				const c = await loadConfetti();
+				c({
+					particleCount: count,
+					spread: 75,
+					startVelocity: 35,
+					origin: { x: x / window.innerWidth, y: y / window.innerHeight },
+					colors,
+					gravity: 0.7,
+					scalar: 0.9,
+					ticks: 110,
+				});
+			}
+
+			heroTitle?.addEventListener("click", e => {
+				clickCount++;
+				if (clickCountEl) clickCountEl.textContent = String(clickCount);
+				heroTitle.style.animation = "none";
+				void heroTitle.offsetWidth;
+				heroTitle.style.animation = "wobble 0.6s ease";
+				popAt((e as MouseEvent).clientX, (e as MouseEvent).clientY, 22);
+				if (clickCount === 10) partyTime();
+			});
+
+			document.getElementById("footer-tag")?.addEventListener("click", e => {
+				popAt((e as MouseEvent).clientX, (e as MouseEvent).clientY, 12);
+			});
+
+			const konami = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+			let kpos = 0;
+			window.addEventListener("keydown", e => {
+				const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+				if (key === konami[kpos]) {
+					kpos++;
+					if (kpos === konami.length) { partyTime(); kpos = 0; }
+				} else { kpos = 0; }
+			});
+
+			async function partyTime() {
+				const c = await loadConfetti();
+				const end = Date.now() + 2200;
+				(function frame() {
+					c({ particleCount: 5, angle: 60, spread: 80, origin: { x: 0, y: 0.7 }, colors, scalar: 0.9 });
+					c({ particleCount: 5, angle: 120, spread: 80, origin: { x: 1, y: 0.7 }, colors, scalar: 0.9 });
+					if (Date.now() < end) requestAnimationFrame(frame);
+				})();
+			}
+
+			// tilt only desktop
+			if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+				document.querySelectorAll<HTMLElement>("[data-tilt]").forEach(el => {
+					let rect: DOMRect | null = null;
+					let raf = 0;
+					let tx = 0, ty = 0;
+					const baseRot = parseFloat(getComputedStyle(el).getPropertyValue("--base-rot")) || 0;
+					function onMove(e: MouseEvent) {
+						if (!rect) rect = el.getBoundingClientRect();
+						const px = (e.clientX - rect.left) / rect.width - 0.5;
+						const py = (e.clientY - rect.top) / rect.height - 0.5;
+						tx = -py * 8; ty = px * 8;
+						if (!raf) raf = requestAnimationFrame(apply);
+					}
+					function apply() {
+						raf = 0;
+						el.style.transform = `perspective(900px) rotateX(${tx}deg) rotateY(${ty}deg) rotate(${baseRot}deg) translateY(-3px)`;
+					}
+					el.addEventListener("mouseenter", () => (rect = el.getBoundingClientRect()));
+					el.addEventListener("mousemove", onMove);
+					el.addEventListener("mouseleave", () => { rect = null; el.style.transform = ""; });
+				});
+			}
+
+			// pause animations when tab hidden
+			document.addEventListener("visibilitychange", () => {
+				document.documentElement.classList.toggle("tab-hidden", document.hidden);
+			});
+
+			document.documentElement.style.scrollBehavior = "smooth";
+
+			// ============== BAC À BLOBS (enriched) ==============
+			interface Bubble {
+				letter: string;
+				x: number; y: number; vx: number; vy: number;
+				r: number; color: string; rot: number; vrot: number;
+				home: { x: number; y: number } | null;
+				popping?: number;
+				accent?: boolean;
+			}
+			interface Particle {
+				x: number; y: number; vx: number; vy: number;
+				life: number; maxLife: number; color: string; r: number;
+			}
+
+			const bubbleCanvas = document.getElementById("bubble-canvas") as HTMLCanvasElement | null;
+			if (bubbleCanvas) {
+				const bctx = bubbleCanvas.getContext("2d")!;
+				const SHADES = ["#5b7a3a", "#7a9c4f", "#3f5a26"];
+				const ACCENT = "#e3d6b4";
+				const HOME = ["L","E","M","J","S","F","G"];
+
+				let bubbles: Bubble[] = [];
+				let particles: Particle[] = [];
+				let dragging: Bubble | null = null;
+				let dragOffset = { x: 0, y: 0 };
+				let dragStart = 0;
+				let dragMoved = 0;
+				let lastP = { x: 0, y: 0, t: 0 };
+				let pVel = { vx: 0, vy: 0 };
+				let bDpr = 1, bW = 0, bH = 0;
+				let bVisible = true;
+				let bLastTime = performance.now();
+				let lastTap = 0;
+
+				// ===== perf instrumentation =====
+				const perfEl = document.getElementById("perf-overlay") as HTMLPreElement | null;
+				const perfEnabled = new URLSearchParams(location.search).has("perf");
+				let perfShow = perfEnabled;
+				if (perfEl && perfShow) perfEl.classList.add("show");
+
+				type Sample = { fps: number; frameMs: number; stepMs: number; drawMs: number };
+				const samples: Sample[] = [];
+				const SAMPLE_MAX = 120;
+				let perfFrameCount = 0;
+				let perfWindowStart = performance.now();
+				let perfTickInterval = 0;
+				let lastConsoleDump = 0;
+
+				function recordSample(s: Sample) {
+					samples.push(s);
+					if (samples.length > SAMPLE_MAX) samples.shift();
+				}
+
+				function pctile(arr: number[], p: number) {
+					if (!arr.length) return 0;
+					const sorted = [...arr].sort((a, b) => a - b);
+					const i = Math.min(sorted.length - 1, Math.max(0, Math.floor((p / 100) * sorted.length)));
+					return sorted[i];
+				}
+
+				function avg(arr: number[]) {
+					if (!arr.length) return 0;
+					return arr.reduce((s, v) => s + v, 0) / arr.length;
+				}
+
+				function snapshot() {
+					const fpsArr = samples.map(s => s.fps).filter(v => v > 0);
+					const ftArr = samples.map(s => s.frameMs);
+					const stArr = samples.map(s => s.stepMs);
+					const drArr = samples.map(s => s.drawMs);
+					return {
+						samples: samples.length,
+						bubbles: bubbles.length,
+						particles: particles.length,
+						visible: bVisible,
+						avgFps: Math.round(avg(fpsArr) * 10) / 10,
+						minFps: Math.round(Math.min(...fpsArr.length ? fpsArr : [0]) * 10) / 10,
+						p95Fps: Math.round(pctile(fpsArr, 5) * 10) / 10,
+						avgFrameMs: Math.round(avg(ftArr) * 100) / 100,
+						p95FrameMs: Math.round(pctile(ftArr, 95) * 100) / 100,
+						maxFrameMs: Math.round(Math.max(...ftArr.length ? ftArr : [0]) * 100) / 100,
+						avgStepMs: Math.round(avg(stArr) * 100) / 100,
+						p95StepMs: Math.round(pctile(stArr, 95) * 100) / 100,
+						avgDrawMs: Math.round(avg(drArr) * 100) / 100,
+						p95DrawMs: Math.round(pctile(drArr, 95) * 100) / 100,
+						dpr: bDpr,
+						canvasPx: `${bW}×${bH}`,
+						mem: (performance as any).memory
+							? Math.round((performance as any).memory.usedJSHeapSize / 1048576) + "MB"
+							: "n/a",
+					};
+				}
+
+				function fmtCell(label: string, val: any, warn?: number, bad?: number, lower = false) {
+					const num = typeof val === "number" ? val : NaN;
+					let cls = "";
+					if (!isNaN(num) && warn !== undefined && bad !== undefined) {
+						if (lower ? num < bad : num > bad) cls = "bad";
+						else if (lower ? num < warn : num > warn) cls = "warn";
+					}
+					return `${label.padEnd(11)} <span class="${cls}">${val}</span>`;
+				}
+
+				function renderPerf() {
+					if (!perfEl || !perfShow) return;
+					const s = snapshot();
+					perfEl.innerHTML = [
+						fmtCell("fps avg",   s.avgFps,   55, 45, true),
+						fmtCell("fps min",   s.minFps,   45, 30, true),
+						fmtCell("fps p5",    s.p95Fps,   45, 30, true),
+						fmtCell("frame avg", s.avgFrameMs.toFixed(2) + "ms", 12, 18),
+						fmtCell("frame p95", s.p95FrameMs.toFixed(2) + "ms", 16, 22),
+						fmtCell("frame max", s.maxFrameMs.toFixed(2) + "ms", 25, 50),
+						fmtCell("step avg",  s.avgStepMs.toFixed(2) + "ms", 4, 8),
+						fmtCell("step p95",  s.p95StepMs.toFixed(2) + "ms", 6, 10),
+						fmtCell("draw avg",  s.avgDrawMs.toFixed(2) + "ms", 4, 8),
+						fmtCell("draw p95",  s.p95DrawMs.toFixed(2) + "ms", 6, 10),
+						`bubbles     <b>${s.bubbles}</b>`,
+						`particles   <b>${s.particles}</b>`,
+						`canvas      <b>${s.canvasPx}</b> @${s.dpr}x`,
+						`heap        <b>${s.mem}</b>`,
+						`visible     <b>${s.visible ? "yes" : "off"}</b>`,
+					].join("\n");
+				}
+
+				function consoleDump(reason: string) {
+					const s = snapshot();
+					console.groupCollapsed(`%c[bac à blobs] ${reason}`, "color: #5b7a3a; font-weight: 700");
+					console.table(s);
+					console.groupEnd();
+				}
+
+				// expose for manual inspection
+				(window as any).__bacABlobs = {
+					snapshot,
+					dump: () => consoleDump("manual"),
+					togglePerf: () => {
+						perfShow = !perfShow;
+						if (perfEl) perfEl.classList.toggle("show", perfShow);
+					},
+					get bubbles() { return bubbles; },
+					get particles() { return particles; },
+				};
+
+				if (perfEnabled) {
+					console.log(
+						"%c[bac à blobs] perf overlay actif",
+						"color: #5b7a3a; font-weight: 700",
+						"\nP = toggle overlay · console.__bacABlobs.dump() = snapshot complet"
+					);
+				}
+
+				// long task observer
+				try {
+					new PerformanceObserver(list => {
+						for (const e of list.getEntries()) {
+							if (e.duration > 50) {
+								console.warn(
+									`%c[bac à blobs] long task ${Math.round(e.duration)}ms`,
+									"color: #ffb84a"
+								);
+							}
+						}
+					}).observe({ type: "longtask", buffered: false });
+				} catch {}
+
+				// keyboard toggle
+				window.addEventListener("keydown", e => {
+					if (e.key === "p" || e.key === "P") {
+						if (e.target && (e.target as HTMLElement).tagName === "INPUT") return;
+						perfShow = !perfShow;
+						if (perfEl) perfEl.classList.toggle("show", perfShow);
+					}
+				});
+
+				function bResize() {
+					bDpr = Math.min(window.devicePixelRatio || 1, 2);
+					const r = bubbleCanvas!.getBoundingClientRect();
+					bW = r.width; bH = r.height;
+					bubbleCanvas!.width = bW * bDpr;
+					bubbleCanvas!.height = bH * bDpr;
+					bctx.setTransform(bDpr, 0, 0, bDpr, 0, 0);
+					initBubbles();
+				}
+
+				function initBubbles() {
+					bubbles = HOME.map((l, i) => {
+						const tx = ((i + 1) * bW) / (HOME.length + 1);
+						const ty = bH / 2;
+						return {
+							letter: l,
+							x: tx + (Math.random() - 0.5) * 30,
+							y: ty + (Math.random() - 0.5) * 30,
+							vx: (Math.random() - 0.5) * 60,
+							vy: (Math.random() - 0.5) * 60,
+							r: Math.max(26, Math.min(46, bH * 0.13)),
+							color: SHADES[i % SHADES.length],
+							rot: (Math.random() - 0.5) * 0.3,
+							vrot: (Math.random() - 0.5) * 0.6,
+							home: { x: tx, y: ty },
+						};
+					});
+				}
+
+				function spawnBubble(x: number, y: number) {
+					if (bubbles.length >= 50) {
+						const idx = bubbles.findIndex(b => !b.home);
+						if (idx >= 0) bubbles.splice(idx, 1);
+					}
+					const accent = Math.random() < 0.18;
+					bubbles.push({
+						letter: ["·","○","•","✦","✺"][Math.floor(Math.random() * 5)],
+						x, y,
+						vx: (Math.random() - 0.5) * 320,
+						vy: (Math.random() - 0.5) * 320,
+						r: 14 + Math.random() * 18,
+						color: accent ? ACCENT : SHADES[Math.floor(Math.random() * SHADES.length)],
+						rot: (Math.random() - 0.5) * 0.5,
+						vrot: (Math.random() - 0.5) * 2.5,
+						home: null,
+						accent,
+					});
+				}
+
+				function popBubble(b: Bubble) {
+					b.popping = 0.001;
+					const count = 10 + Math.floor(b.r / 4);
+					for (let i = 0; i < count; i++) {
+						const a = (i / count) * Math.PI * 2 + Math.random() * 0.4;
+						const sp = 80 + Math.random() * 240;
+						particles.push({
+							x: b.x, y: b.y,
+							vx: Math.cos(a) * sp,
+							vy: Math.sin(a) * sp,
+							life: 0,
+							maxLife: 0.5 + Math.random() * 0.4,
+							color: b.color,
+							r: 2 + Math.random() * 3,
+						});
+					}
+				}
+
+				function bStep(dt: number) {
+					for (const b of bubbles) {
+						if (b === dragging) continue;
+						if (b.popping !== undefined) { b.popping += dt * 4; continue; }
+						b.vy += -10 * dt;
+						const damp = Math.pow(0.985, dt * 60);
+						b.vx *= damp; b.vy *= damp;
+						b.vrot *= Math.pow(0.97, dt * 60);
+						if (b.home) {
+							b.vx += (b.home.x - b.x) * 0.18 * dt;
+							b.vy += (b.home.y - b.y) * 0.18 * dt;
+						}
+						const dx = b.x - lastP.x, dy = b.y - lastP.y;
+						const d2 = dx * dx + dy * dy;
+						const speed2 = pVel.vx * pVel.vx + pVel.vy * pVel.vy;
+						const reach = (b.r + 60);
+						if (d2 < reach * reach && speed2 > 80000) {
+							const f = (1 - Math.sqrt(d2) / reach) * 0.5;
+							b.vx += pVel.vx * f * dt;
+							b.vy += pVel.vy * f * dt;
+						}
+						b.x += b.vx * dt;
+						b.y += b.vy * dt;
+						b.rot += b.vrot * dt;
+						if (b.x - b.r < 0) { b.x = b.r; b.vx *= -0.65; }
+						if (b.x + b.r > bW) { b.x = bW - b.r; b.vx *= -0.65; }
+						if (b.y - b.r < 0) { b.y = b.r; b.vy *= -0.65; }
+						if (b.y + b.r > bH) { b.y = bH - b.r; b.vy *= -0.65; }
+					}
+					bubbles = bubbles.filter(b => b.popping === undefined || b.popping < 1);
+					for (let i = 0; i < bubbles.length; i++) {
+						for (let j = i + 1; j < bubbles.length; j++) {
+							const a = bubbles[i], b = bubbles[j];
+							if (a.popping !== undefined || b.popping !== undefined) continue;
+							const dx = b.x - a.x, dy = b.y - a.y;
+							const dist = Math.hypot(dx, dy) || 0.001;
+							const overlap = a.r + b.r - dist;
+							if (overlap > 0) {
+								const nx = dx / dist, ny = dy / dist;
+								a.x -= nx * overlap / 2; a.y -= ny * overlap / 2;
+								b.x += nx * overlap / 2; b.y += ny * overlap / 2;
+								const av = a.vx * nx + a.vy * ny;
+								const bv = b.vx * nx + b.vy * ny;
+								const k = 0.7;
+								a.vx += (bv - av) * nx * k;
+								a.vy += (bv - av) * ny * k;
+								b.vx += (av - bv) * nx * k;
+								b.vy += (av - bv) * ny * k;
+							}
+						}
+					}
+					for (const p of particles) {
+						p.life += dt;
+						p.vy += 600 * dt;
+						p.vx *= 0.96; p.vy *= 0.97;
+						p.x += p.vx * dt; p.y += p.vy * dt;
+					}
+					particles = particles.filter(p => p.life < p.maxLife);
+					pVel.vx *= Math.pow(0.85, dt * 60);
+					pVel.vy *= Math.pow(0.85, dt * 60);
+				}
+
+				function bDraw() {
+					bctx.clearRect(0, 0, bW, bH);
+					for (const b of bubbles) {
+						bctx.save();
+						bctx.translate(b.x, b.y);
+						bctx.rotate(b.rot);
+						const sc = b.popping !== undefined ? 1 + b.popping * 0.6 : 1;
+						const al = b.popping !== undefined ? Math.max(0, 1 - b.popping) : 1;
+						bctx.scale(sc, sc);
+						bctx.globalAlpha = al;
+						bctx.fillStyle = "#3f5a26";
+						bctx.beginPath(); bctx.arc(3, 3, b.r, 0, Math.PI * 2); bctx.fill();
+						bctx.fillStyle = b.color;
+						bctx.beginPath(); bctx.arc(0, 0, b.r, 0, Math.PI * 2); bctx.fill();
+						bctx.strokeStyle = "#2a2a26"; bctx.lineWidth = 2.5; bctx.stroke();
+						bctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+						bctx.beginPath(); bctx.arc(-b.r * 0.3, -b.r * 0.35, b.r * 0.32, 0, Math.PI * 2); bctx.fill();
+						bctx.fillStyle = b.accent ? "#2a2a26" : "#efe6d0";
+						bctx.font = `${Math.round(b.r * 1.1)}px 'Bagel Fat One', sans-serif`;
+						bctx.textAlign = "center"; bctx.textBaseline = "middle";
+						bctx.fillText(b.letter, 0, 2);
+						bctx.restore();
+					}
+					bctx.globalAlpha = 1;
+					for (const p of particles) {
+						const t = 1 - p.life / p.maxLife;
+						bctx.globalAlpha = t;
+						bctx.fillStyle = p.color;
+						bctx.beginPath(); bctx.arc(p.x, p.y, p.r * t, 0, Math.PI * 2); bctx.fill();
+					}
+					bctx.globalAlpha = 1;
+				}
+
+				function getBubblePointer(e: PointerEvent) {
+					const r = bubbleCanvas!.getBoundingClientRect();
+					return { x: e.clientX - r.left, y: e.clientY - r.top };
+				}
+
+				bubbleCanvas.addEventListener("pointerdown", (e) => {
+					const p = getBubblePointer(e);
+					let target: Bubble | null = null;
+					let mind = Infinity;
+					for (const b of bubbles) {
+						if (b.popping !== undefined) continue;
+						const dx = b.x - p.x, dy = b.y - p.y;
+						const d = dx * dx + dy * dy;
+						if (d < b.r * b.r && d < mind) { mind = d; target = b; }
+					}
+					if (target) {
+						e.preventDefault();
+						bubbleCanvas!.setPointerCapture(e.pointerId);
+						dragging = target;
+						dragOffset = { x: p.x - target.x, y: p.y - target.y };
+						dragStart = performance.now();
+						dragMoved = 0;
+						target.vx = 0; target.vy = 0;
+					} else {
+						spawnBubble(p.x, p.y);
+					}
+					lastP = { x: p.x, y: p.y, t: performance.now() };
+				});
+
+				bubbleCanvas.addEventListener("pointermove", (e) => {
+					const p = getBubblePointer(e);
+					const now = performance.now();
+					const dt = Math.max((now - lastP.t) / 1000, 0.008);
+					pVel.vx = (p.x - lastP.x) / dt;
+					pVel.vy = (p.y - lastP.y) / dt;
+					if (dragging) {
+						dragMoved += Math.hypot(p.x - lastP.x, p.y - lastP.y);
+						dragging.x = p.x - dragOffset.x;
+						dragging.y = p.y - dragOffset.y;
+						dragging.vx = pVel.vx;
+						dragging.vy = pVel.vy;
+					}
+					lastP = { x: p.x, y: p.y, t: now };
+				});
+
+				function endBubbleDrag(e: PointerEvent) {
+					if (dragging) {
+						const heldFor = performance.now() - dragStart;
+						if (heldFor > 380 && dragMoved < 8) popBubble(dragging);
+					}
+					dragging = null;
+					try { bubbleCanvas!.releasePointerCapture(e.pointerId); } catch {}
+				}
+				bubbleCanvas.addEventListener("pointerup", endBubbleDrag);
+				bubbleCanvas.addEventListener("pointercancel", endBubbleDrag);
+
+				function shake() {
+					for (const b of bubbles) {
+						if (b.popping !== undefined) continue;
+						b.vx += (Math.random() - 0.5) * 800;
+						b.vy += (Math.random() - 0.5) * 800;
+						b.vrot += (Math.random() - 0.5) * 6;
+					}
+				}
+				bubbleCanvas.addEventListener("dblclick", shake);
+				bubbleCanvas.addEventListener("touchend", () => {
+					const now = performance.now();
+					if (now - lastTap < 320) shake();
+					lastTap = now;
+				});
+
+				const bubbleRO = new ResizeObserver(bResize);
+				bubbleRO.observe(bubbleCanvas);
+				const bubbleIO = new IntersectionObserver(([entry]) => { bVisible = entry.isIntersecting; }, { rootMargin: "100px" });
+				bubbleIO.observe(bubbleCanvas);
+
+				bResize();
+				function bLoop(t: number) {
+					const frameMs = bLastTime ? t - bLastTime : 16.67;
+					const dt = Math.min(frameMs / 1000, 1 / 30);
+					bLastTime = t;
+					let stepMs = 0, drawMs = 0;
+					if (bVisible) {
+						const t0 = performance.now();
+						bStep(dt);
+						const t1 = performance.now();
+						bDraw();
+						const t2 = performance.now();
+						stepMs = t1 - t0;
+						drawMs = t2 - t1;
+					}
+					perfFrameCount++;
+					recordSample({
+						fps: frameMs > 0 ? 1000 / frameMs : 0,
+						frameMs,
+						stepMs,
+						drawMs,
+					});
+					if (perfShow && (!perfTickInterval || t - perfTickInterval > 200)) {
+						renderPerf();
+						perfTickInterval = t;
+					}
+					if (perfEnabled && t - lastConsoleDump > 5000) {
+						consoleDump("5s tick");
+						lastConsoleDump = t;
+					}
+					requestAnimationFrame(bLoop);
+				}
+				requestAnimationFrame(bLoop);
+			}
+		</script>
+
+		<style>
+			:root {
+				--beige: #efe6d0;
+				--beige-paper: #f6efd9;
+				--beige-dark: #e3d6b4;
+				--matcha: #5b7a3a;
+				--matcha-light: #7a9c4f;
+				--matcha-deep: #3f5a26;
+				--matcha-tape: rgba(91, 122, 58, 0.55);
+				--ink: #2a2a26;
+			}
+
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			html {
+				overscroll-behavior-y: none;
+			}
+
+			html,
+			body {
+				background: var(--beige);
+				color: var(--ink);
+				font-family: "Bagel Fat One", system-ui, sans-serif;
+				font-weight: 400;
+				overflow-x: hidden;
+				-webkit-font-smoothing: antialiased;
+				-webkit-tap-highlight-color: transparent;
+			}
+
+			body {
+				min-height: 100vh;
+				min-height: 100svh;
+				position: relative;
+			}
+
+			/* ====== BACKGROUND BLOBS (SVG goo) ====== */
+			.bg-blobs {
+				position: fixed;
+				inset: 0;
+				width: 100vw;
+				height: 100vh;
+				height: 100svh;
+				pointer-events: none;
+				z-index: 0;
+				mix-blend-mode: multiply;
+				opacity: 0.85;
+			}
+
+			.bg-blob {
+				fill: var(--matcha);
+				transform-origin: center;
+				transform-box: fill-box;
+				will-change: transform;
+			}
+			.bb1 { animation: bf1 26s ease-in-out infinite; }
+			.bb2 { animation: bf2 32s ease-in-out infinite; }
+			.bb3 { animation: bf3 29s ease-in-out infinite; }
+			.bb4 { animation: bf4 24s ease-in-out infinite; }
+
+			@keyframes bf1 {
+				0%, 100% { transform: translate(0, 0) scale(1); }
+				33%      { transform: translate(140px, 90px) scale(1.25); }
+				66%      { transform: translate(-80px, 180px) scale(0.85); }
+			}
+			@keyframes bf2 {
+				0%, 100% { transform: translate(0, 0) scale(1); }
+				40%      { transform: translate(-160px, -130px) scale(1.15); }
+				70%      { transform: translate(90px, 110px) scale(0.95); }
+			}
+			@keyframes bf3 {
+				0%, 100% { transform: translate(0, 0) scale(1); }
+				50%      { transform: translate(140px, -200px) scale(1.2); }
+			}
+			@keyframes bf4 {
+				0%, 100% { transform: translate(0, 0) scale(1); }
+				50%      { transform: translate(-180px, 240px) scale(1.3); }
+			}
+
+			/* ====== GRAIN (data-URI tile, rendered once) ====== */
+			.grain {
+				position: fixed;
+				inset: 0;
+				pointer-events: none;
+				z-index: 100;
+				opacity: 0.5;
+				mix-blend-mode: multiply;
+				background-size: 200px 200px;
+				background-repeat: repeat;
+				will-change: auto;
+				contain: strict;
+			}
+
+			main {
+				position: relative;
+				z-index: 1;
+			}
+
+			/* ====== HERO ====== */
+			.hero {
+				min-height: 86vh;
+				min-height: 86svh;
+				display: grid;
+				place-items: center;
+				padding: 1.5rem;
+				text-align: center;
+				gap: 1rem;
+				grid-template-rows: 1fr auto;
+				contain: layout paint;
+			}
+
+			.riso {
+				position: relative;
+				font-size: clamp(3.5rem, 18vw, 14rem);
+				line-height: 0.9;
+				letter-spacing: -0.03em;
+				color: var(--ink);
+				text-transform: lowercase;
+				align-self: end;
+				animation: settle 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+				user-select: none;
+			}
+
+			#hero-title {
+				text-transform: none;
+				letter-spacing: -0.02em;
+			}
+
+			.riso::before {
+				content: attr(data-text);
+				position: absolute;
+				inset: 0;
+				color: var(--matcha);
+				transform: translate(0.045em, 0.045em);
+				z-index: -1;
+				mix-blend-mode: multiply;
+				opacity: 0.95;
+			}
+
+			.riso-md {
+				font-size: clamp(2.2rem, 9vw, 5rem);
+				align-self: center;
+				display: inline-block;
+			}
+
+			@keyframes settle {
+				from { transform: translate3d(0, 40px, 0) scale(0.96); opacity: 0; }
+				to   { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+			}
+
+			@keyframes wobble {
+				0%, 100% { transform: translate3d(0, 0, 0) rotate(0); }
+				15% { transform: translate3d(0, -6px, 0) rotate(-1.5deg) scale(1.04); }
+				30% { transform: translate3d(0, 0, 0) rotate(1deg) scale(0.98); }
+				50% { transform: translate3d(0, -3px, 0) rotate(-0.5deg); }
+				75% { transform: translate3d(0, 0, 0) rotate(0.5deg); }
+			}
+
+			.tagline {
+				font-family: "Bagel Fat One", sans-serif;
+				font-size: clamp(1rem, 2.6vw, 1.4rem);
+				color: var(--matcha-deep);
+				align-self: center;
+				letter-spacing: 0.02em;
+				text-transform: lowercase;
+				margin-top: -0.3rem;
+				animation: settle 1.2s 0.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+			}
+
+			.baseline {
+				font-family: "Caveat", cursive;
+				font-weight: 500;
+				font-size: clamp(1.1rem, 3.4vw, 1.5rem);
+				color: var(--matcha-deep);
+				align-self: start;
+				max-width: 28ch;
+				margin: 0 auto;
+				line-height: 1.25;
+				padding-bottom: 1.5rem;
+			}
+
+			/* ====== SECTION ====== */
+			.sec-head {
+				text-align: center;
+				margin-bottom: 1.5rem;
+			}
+
+			.sub {
+				font-family: "Caveat", cursive;
+				font-size: clamp(1.05rem, 2.6vw, 1.4rem);
+				color: var(--matcha-deep);
+				margin-top: 0.4rem;
+				max-width: 32ch;
+				margin-inline: auto;
+				line-height: 1.3;
+			}
+
+			.sub em {
+				font-style: italic;
+				text-decoration: line-through;
+				text-decoration-color: var(--matcha);
+				text-decoration-thickness: 2px;
+			}
+
+			mark {
+				background: linear-gradient(
+					transparent 55%,
+					rgba(91, 122, 58, 0.42) 55%,
+					rgba(91, 122, 58, 0.42) 92%,
+					transparent 92%
+				);
+				color: inherit;
+				padding: 0 0.08em;
+			}
+
+			/* ====== BUBBLE PLAY ====== */
+			.bubble-play {
+				padding: 2.5rem 1rem 3rem;
+				max-width: 800px;
+				margin: 0 auto;
+				contain: layout paint;
+			}
+
+			.canvas-wrap {
+				position: relative;
+				background: var(--beige-paper);
+				border: 2.5px solid var(--ink);
+				box-shadow: 6px 6px 0 var(--matcha);
+				transform: rotate(0.5deg);
+				overflow: hidden;
+			}
+
+			.canvas-wrap canvas {
+				display: block;
+				width: 100%;
+				aspect-ratio: 16 / 9;
+				cursor: grab;
+				touch-action: none;
+			}
+			.canvas-wrap canvas:active { cursor: grabbing; }
+
+			.perf-overlay {
+				position: absolute;
+				top: 8px;
+				left: 8px;
+				font-family: "Bagel Fat One", monospace;
+				font-size: 0.7rem;
+				background: rgba(42, 42, 38, 0.85);
+				color: #efe6d0;
+				padding: 6px 9px;
+				border-radius: 6px;
+				line-height: 1.45;
+				pointer-events: none;
+				white-space: pre;
+				display: none;
+				z-index: 5;
+				letter-spacing: 0.02em;
+			}
+			.perf-overlay.show { display: block; }
+			.perf-overlay b { color: #7a9c4f; font-weight: 400; }
+			.perf-overlay .warn { color: #ffb84a; }
+			.perf-overlay .bad { color: #ff7878; }
+
+			/* ====== WISDOM (zine) ====== */
+			.wisdom {
+				padding: 2rem 1rem 3rem;
+				max-width: 1000px;
+				margin: 0 auto;
+				contain: layout paint;
+			}
+
+			.wisdom-grid {
+				display: grid;
+				grid-template-columns: repeat(12, 1fr);
+				gap: 0.8rem;
+				margin-top: 2rem;
+			}
+
+			.wisdom-card {
+				font-family: "Caveat", cursive;
+				font-weight: 700;
+				color: var(--ink);
+				padding: 1rem 1.25rem;
+				line-height: 1.3;
+				transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+				position: relative;
+			}
+
+			.wisdom-card p { font-size: clamp(1rem, 2.2vw, 1.4rem); }
+
+			.wisdom-card:hover { transform: rotate(0deg) scale(1.03) !important; }
+
+			.wisdom-card .hashtag {
+				display: inline-block;
+				margin-top: 0.5rem;
+				font-family: "Bagel Fat One", sans-serif;
+				font-size: 0.75rem;
+				color: var(--matcha-deep);
+				letter-spacing: 0.04em;
+			}
+
+			.w-stamp {
+				background: var(--matcha);
+				color: var(--beige-paper);
+				border: 2.5px solid var(--ink);
+				box-shadow: 5px 5px 0 var(--ink);
+				transform: rotate(-2.5deg);
+				grid-column: span 5;
+				font-family: "Bagel Fat One", sans-serif;
+				text-transform: lowercase;
+			}
+			.w-stamp p { font-family: "Bagel Fat One", sans-serif; }
+
+			.w-torn {
+				background: var(--beige-paper);
+				color: var(--ink);
+				transform: rotate(1.8deg);
+				grid-column: span 7;
+				clip-path: polygon(0% 8%, 4% 2%, 12% 5%, 20% 0%, 30% 6%, 42% 1%, 56% 4%, 70% 0%, 84% 5%, 96% 2%, 100% 12%, 98% 90%, 100% 100%, 86% 96%, 72% 100%, 58% 95%, 44% 100%, 30% 96%, 16% 100%, 4% 95%, 0% 90%);
+				padding: 1.5rem 1.5rem;
+				box-shadow: 3px 3px 0 rgba(91, 122, 58, 0.5);
+				font-style: italic;
+			}
+
+			.w-longue {
+				background: var(--beige-dark);
+				color: var(--ink);
+				transform: rotate(-0.8deg);
+				grid-column: span 12;
+				padding: 1.5rem 2rem;
+				border-left: 6px solid var(--matcha);
+				border-right: 6px solid var(--matcha);
+				font-size: 1.1rem;
+			}
+
+			.w-carnet {
+				background: var(--beige-paper);
+				color: var(--ink);
+				transform: rotate(2.4deg);
+				grid-column: span 6;
+				background-image: repeating-linear-gradient(
+					var(--beige-paper),
+					var(--beige-paper) 28px,
+					rgba(91, 122, 58, 0.2) 28px,
+					rgba(91, 122, 58, 0.2) 29px
+				);
+				border: 2px solid var(--ink);
+				padding: 1.2rem 1.4rem 1.4rem 2.2rem;
+				box-shadow: 4px 4px 0 var(--matcha);
+				position: relative;
+			}
+			.w-carnet::before {
+				content: "";
+				position: absolute;
+				left: 1.2rem; top: 0; bottom: 0;
+				width: 1.5px;
+				background: rgba(220, 80, 80, 0.45);
+			}
+
+			.w-post-it {
+				background: #d4e3a6;
+				color: var(--ink);
+				transform: rotate(-3.2deg);
+				grid-column: span 6;
+				box-shadow: 4px 6px 14px rgba(40, 40, 30, 0.18);
+				border: 1px solid rgba(91, 122, 58, 0.3);
+				padding: 1.4rem 1.4rem;
+			}
+
+			.w-sticker {
+				background: var(--ink);
+				color: var(--beige-paper);
+				transform: rotate(1.2deg);
+				grid-column: span 12;
+				border-radius: 12px;
+				padding: 1.4rem 1.6rem;
+				font-family: "Bagel Fat One", sans-serif;
+				text-transform: lowercase;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 0.5rem;
+			}
+			.w-sticker p { font-family: "Bagel Fat One", sans-serif; }
+			.w-sticker .hashtag {
+				color: var(--matcha-light);
+				margin-top: 0;
+				font-size: 0.85rem;
+			}
+
+			.hint {
+				text-align: center;
+				font-family: "Caveat", cursive;
+				font-size: 1rem;
+				color: var(--matcha-deep);
+				margin-top: 1rem;
+				line-height: 1.4;
+			}
+
+			.sep { margin: 0 0.4em; opacity: 0.5; }
+
+			.kbd {
+				display: inline-block;
+				padding: 1px 7px;
+				background: var(--beige-paper);
+				border: 1.5px solid var(--ink);
+				border-radius: 6px;
+				font-family: "Bagel Fat One", monospace;
+				font-size: 0.74rem;
+				color: var(--ink);
+				margin: 0 1px;
+				box-shadow: 1.5px 1.5px 0 var(--matcha);
+				vertical-align: 1px;
+				letter-spacing: 0.02em;
+			}
+
+			/* ====== DUO ====== */
+			.duo {
+				padding: 2.5rem 1rem 3rem;
+				max-width: 900px;
+				margin: 0 auto;
+				contain: layout paint;
+			}
+
+			.duo-grid {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: clamp(1.5rem, 4vw, 3.5rem);
+				align-items: start;
+				margin-top: 2rem;
+			}
+
+			.associe {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 1rem;
+			}
+
+			.polaroid {
+				position: relative;
+				background: var(--beige-paper);
+				padding: 12px 12px 16px;
+				box-shadow:
+					5px 5px 0 var(--matcha),
+					0 6px 24px rgba(40, 40, 30, 0.1);
+				transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+				width: 100%;
+				max-width: 320px;
+				transform-style: preserve-3d;
+			}
+
+			.associe-0 .polaroid { transform: rotate(-2.2deg); --base-rot: -2.2; }
+			.associe-1 .polaroid { transform: rotate(1.8deg); --base-rot: 1.8; }
+
+			.frame {
+				position: relative;
+				background: var(--beige-paper);
+				overflow: hidden;
+				aspect-ratio: 3 / 4;
+				display: block;
+			}
+
+			.frame picture,
+			.frame img {
+				display: block;
+				width: 100%;
+				height: 100%;
+			}
+
+			.frame img {
+				object-fit: cover;
+				image-orientation: from-image;
+				filter: contrast(1.04) saturate(0.88) sepia(0.1);
+			}
+
+			.riso-overlay {
+				position: absolute;
+				inset: 0;
+				background: var(--matcha);
+				mix-blend-mode: multiply;
+				opacity: 0.16;
+				transform: translate(3px, 3px);
+				pointer-events: none;
+			}
+
+			.stamp {
+				position: absolute;
+				bottom: 10px;
+				right: 10px;
+				background: var(--matcha);
+				color: var(--beige-paper);
+				font-family: "Bagel Fat One", sans-serif;
+				font-size: 0.78rem;
+				padding: 4px 9px;
+				border: 2px solid var(--ink);
+				transform: rotate(-6deg);
+				letter-spacing: 0.04em;
+				text-transform: lowercase;
+				box-shadow: 2px 2px 0 var(--ink);
+			}
+
+			.washi {
+				position: absolute;
+				top: -12px;
+				width: 70px;
+				height: 22px;
+				background: var(--matcha-tape);
+				border: 1px dashed rgba(0, 0, 0, 0.15);
+				transform: rotate(-6deg);
+			}
+
+			.associe-0 .washi { left: 24px; transform: rotate(-8deg); }
+			.associe-1 .washi { right: 22px; transform: rotate(7deg); }
+
+			.caption-card {
+				margin-top: 12px;
+				padding: 4px 2px 0;
+				display: flex;
+				flex-direction: column;
+				gap: 2px;
+				color: var(--ink);
+			}
+
+			.caption-card h3 {
+				font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+				line-height: 1;
+				text-transform: lowercase;
+				letter-spacing: -0.02em;
+			}
+
+			.caption-card .role {
+				font-family: "Caveat", cursive;
+				font-weight: 500;
+				font-size: 1rem;
+				color: var(--matcha-deep);
+				margin-top: 2px;
+				line-height: 1.2;
+			}
+
+			.associe .quote {
+				font-family: "Caveat", cursive;
+				font-weight: 700;
+				font-size: clamp(1.2rem, 3.2vw, 1.6rem);
+				color: var(--ink);
+				text-align: center;
+				max-width: 22ch;
+				line-height: 1.2;
+				transform: rotate(-1.5deg);
+			}
+
+			.associe-1 .quote { transform: rotate(1deg); }
+
+			/* ====== FOOTER ====== */
+			.footer {
+				padding: 2rem 1rem 3rem;
+				display: grid;
+				place-items: center;
+				gap: 1rem;
+				contain: layout paint;
+			}
+
+			.bubble-tag {
+				display: inline-block;
+				padding: 0.7rem 1.6rem 0.55rem;
+				background: var(--beige-dark);
+				border: 2.5px solid var(--ink);
+				border-radius: 999px;
+				font-size: 1rem;
+				letter-spacing: 0.04em;
+				box-shadow: 4px 4px 0 var(--matcha);
+				transition: transform 0.3s ease, box-shadow 0.3s ease;
+				cursor: pointer;
+				user-select: none;
+			}
+
+			.bubble-tag:active,
+			.bubble-tag:hover {
+				transform: translate3d(-2px, -2px, 0);
+				box-shadow: 6px 6px 0 var(--matcha);
+			}
+
+			.footer-counter {
+				font-family: "Caveat", cursive;
+				font-size: 1rem;
+				color: var(--matcha-deep);
+				text-align: center;
+			}
+
+			.footer-counter span {
+				font-family: "Bagel Fat One", sans-serif;
+				color: var(--ink);
+				margin: 0 3px;
+			}
+
+			/* ====== MOBILE ====== */
+			@media (max-width: 720px) {
+				.hero { min-height: 78svh; }
+				.bg-blobs { opacity: 0.5; }
+				.grain { opacity: 0.4; }
+				.duo-grid {
+					grid-template-columns: 1fr;
+					gap: 2.5rem;
+				}
+				.polaroid { max-width: 280px; }
+				.canvas-wrap canvas { aspect-ratio: 4 / 3; }
+				.wisdom-grid { grid-template-columns: 1fr; gap: 1rem; }
+				.w-stamp, .w-torn, .w-longue, .w-carnet, .w-post-it, .w-sticker { grid-column: span 1; }
+			}
+
+			@media (max-width: 420px) {
+				.bg-blobs { opacity: 0.4; }
+				.canvas-wrap canvas { aspect-ratio: 5 / 4; }
+				.hint { font-size: 0.95rem; }
+				.riso { font-size: clamp(3.2rem, 17vw, 6rem); }
+			}
+
+			/* pause animations on hidden tab */
+			.tab-hidden .bg-blob,
+			.tab-hidden .baseline,
+			.tab-hidden .riso {
+				animation-play-state: paused;
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				.bg-blob, .riso, .baseline { animation: none !important; }
+				.bg-blobs { opacity: 0.4; }
+				html { scroll-behavior: auto; }
+			}
+		</style>
 	</body>
 </html>
