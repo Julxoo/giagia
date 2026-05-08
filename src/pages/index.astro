@@ -271,6 +271,39 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 
 			document.documentElement.style.scrollBehavior = "smooth";
 
+			// ============== AUTO LITE MODE (low-FPS detection) ==============
+			// If the device runs <50fps in the first ~1.2s, drop the heavy SVG goo + grain.
+			(() => {
+				const root = document.documentElement;
+				if (root.classList.contains("lite")) return;
+				if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+					root.classList.add("lite");
+					return;
+				}
+				let frames = 0;
+				let start = 0;
+				let cumLag = 0;
+				let last = performance.now();
+				function probe(t: number) {
+					if (!start) start = t;
+					const dt = t - last;
+					last = t;
+					frames++;
+					if (dt > 32) cumLag += dt - 16.67; // accumulate frames slower than ~30fps
+					const elapsed = t - start;
+					if (elapsed < 1200) {
+						requestAnimationFrame(probe);
+						return;
+					}
+					const fps = (frames / elapsed) * 1000;
+					// Trigger lite if avg fps low OR cumulative lag > 200ms over the window
+					if (fps < 50 || cumLag > 200) {
+						root.classList.add("lite");
+					}
+				}
+				requestAnimationFrame(probe);
+			})();
+
 			// ============== BAC À BLOBS (enriched) ==============
 			interface Bubble {
 				letter: string;
@@ -1132,6 +1165,14 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 				color: var(--ink);
 				margin: 0 3px;
 			}
+
+			/* ====== LITE MODE (low-perf devices, auto-detected) ====== */
+			.lite .bg-blobs > g { filter: none !important; }
+			.lite .bg-blobs { opacity: 0.55; mix-blend-mode: normal; }
+			.lite .bg-blob { opacity: 0.45; }
+			.lite .bb3, .lite .bb4 { display: none; }
+			.lite .grain { display: none; }
+			.lite .riso-overlay { opacity: 0.1; }
 
 			/* ====== MOBILE ====== */
 			@media (max-width: 720px) {
