@@ -1353,8 +1353,13 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 			/* ====== MOBILE ====== */
 			@media (max-width: 720px) {
 				.hero { min-height: 78svh; }
-				.bg-blobs { opacity: 0.5; }
-				.grain { opacity: 0.4; }
+				/* drop the heavy SVG goo filter on mobile — it kills FPS */
+				.bg-blobs > g { filter: none !important; }
+				.bg-blobs { opacity: 0.55; mix-blend-mode: normal; }
+				.bg-blob { opacity: 0.45; }
+				.bb3, .bb4 { display: none; }
+				/* drop the grain overlay too — full-screen mix-blend forces compositing per frame */
+				.grain { display: none; }
 				.duo-grid {
 					grid-template-columns: 1fr;
 					gap: 2.5rem;
@@ -1366,7 +1371,7 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 			}
 
 			@media (max-width: 420px) {
-				.bg-blobs { opacity: 0.4; }
+				.bb2 { display: none; }
 				.canvas-wrap canvas { aspect-ratio: 5 / 4; }
 				.hint { font-size: 0.95rem; }
 				.riso { font-size: clamp(3.2rem, 17vw, 6rem); }
