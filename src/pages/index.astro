@@ -97,18 +97,32 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 		<div class="grain" aria-hidden="true" style={`background-image:${grainURI}`}></div>
 
 		<a href="/camelote" class="promo-strip" aria-label="lancement de la camelote — visiter le rayon">
-			<div class="promo-track">
-				{[...promoItems, ...promoItems, ...promoItems, ...promoItems].map((it) => (
-					<>
-						<span class="promo-item">{it}</span>
-						<span class="promo-sep" aria-hidden="true">●</span>
-					</>
-				))}
+			<span class="promo-badge" aria-hidden="true">
+				<span class="promo-badge-dot"></span>
+				nouveau
+			</span>
+			<div class="promo-marquee">
+				<div class="promo-track">
+					{[...promoItems, ...promoItems, ...promoItems, ...promoItems].map((it) => (
+						<>
+							<span class="promo-item">{it}</span>
+							<span class="promo-sep" aria-hidden="true">✦</span>
+						</>
+					))}
+				</div>
 			</div>
+			<span class="promo-cta" aria-hidden="true">visiter <span class="promo-arrow">→</span></span>
 		</a>
 
 		<main>
 			<section class="hero">
+				<a href="/camelote" class="new-badge" aria-label="la camelote — nouveau">
+					<span class="new-badge-tape" aria-hidden="true"></span>
+					<span class="new-badge-kicker">★ nouveau</span>
+					<span class="new-badge-title">la camelote</span>
+					<span class="new-badge-sub">objets douteux<br/>prix indécents</span>
+					<span class="new-badge-cta">voir le rayon →</span>
+				</a>
 				<h1 class="riso" id="hero-title" data-text={title}>{title}</h1>
 				<p class="tagline">{tagline}</p>
 				<p class="baseline">{baseline}</p>
@@ -718,42 +732,89 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 				position: sticky;
 				top: 0;
 				z-index: 50;
-				display: block;
-				background: var(--ink);
+				display: flex;
+				align-items: stretch;
+				background: var(--matcha-deep);
 				color: var(--beige-paper);
-				border-bottom: 2.5px solid var(--matcha);
+				border-bottom: 3px solid var(--ink);
 				overflow: hidden;
-				padding: 0.55rem 0;
 				text-decoration: none;
 				cursor: pointer;
-				box-shadow: 0 3px 0 var(--matcha-deep);
+				box-shadow: 0 3px 0 var(--ink), 0 8px 22px rgba(40, 40, 30, 0.18);
+				animation: promo-drop 0.8s cubic-bezier(0.2, 1.2, 0.4, 1) both;
 			}
 
-			.promo-strip::before,
-			.promo-strip::after {
+			@keyframes promo-drop {
+				from { transform: translate3d(0, -100%, 0); opacity: 0; }
+				to   { transform: translate3d(0, 0, 0); opacity: 1; }
+			}
+
+			.promo-badge {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				background: var(--ink);
+				color: var(--beige-paper);
+				font-family: "Bagel Fat One", sans-serif;
+				font-size: 1rem;
+				text-transform: uppercase;
+				letter-spacing: 0.1em;
+				padding: 0.95rem 1.2rem 0.85rem;
+				border-right: 3px solid var(--ink);
+				white-space: nowrap;
+				position: relative;
+				z-index: 3;
+				flex-shrink: 0;
+			}
+
+			.promo-badge-dot {
+				display: inline-block;
+				width: 9px;
+				height: 9px;
+				border-radius: 50%;
+				background: var(--beige-paper);
+				box-shadow: 0 0 0 0 rgba(246, 239, 217, 0.6);
+				animation: promo-pulse 1.6s ease-out infinite;
+			}
+
+			@keyframes promo-pulse {
+				0%   { box-shadow: 0 0 0 0 rgba(246, 239, 217, 0.7); }
+				70%  { box-shadow: 0 0 0 12px rgba(246, 239, 217, 0); }
+				100% { box-shadow: 0 0 0 0 rgba(246, 239, 217, 0); }
+			}
+
+			.promo-marquee {
+				flex: 1;
+				overflow: hidden;
+				position: relative;
+				min-width: 0;
+			}
+			.promo-marquee::before,
+			.promo-marquee::after {
 				content: "";
 				position: absolute;
 				top: 0;
 				bottom: 0;
-				width: 48px;
+				width: 36px;
 				z-index: 2;
 				pointer-events: none;
 			}
-			.promo-strip::before {
+			.promo-marquee::before {
 				left: 0;
-				background: linear-gradient(to right, var(--ink), transparent);
+				background: linear-gradient(to right, var(--matcha-deep), transparent);
 			}
-			.promo-strip::after {
+			.promo-marquee::after {
 				right: 0;
-				background: linear-gradient(to left, var(--ink), transparent);
+				background: linear-gradient(to left, var(--matcha-deep), transparent);
 			}
 
 			.promo-track {
 				display: flex;
 				align-items: center;
-				gap: 1.4rem;
+				gap: 1.6rem;
 				width: max-content;
-				animation: promo-scroll 38s linear infinite;
+				padding: 1rem 1.2rem;
+				animation: promo-scroll 32s linear infinite;
 				will-change: transform;
 			}
 
@@ -763,10 +824,11 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 
 			.promo-item {
 				font-family: "Bagel Fat One", sans-serif;
-				font-size: 0.95rem;
+				font-size: 1.05rem;
 				letter-spacing: 0.02em;
 				text-transform: lowercase;
 				white-space: nowrap;
+				color: var(--beige-paper);
 			}
 
 			.promo-sep {
@@ -775,13 +837,140 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 				transform: translateY(-1px);
 			}
 
+			.promo-cta {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.4rem;
+				background: var(--beige-paper);
+				color: var(--ink);
+				font-family: "Bagel Fat One", sans-serif;
+				font-size: 1rem;
+				text-transform: lowercase;
+				padding: 0.95rem 1.2rem 0.85rem;
+				border-left: 3px solid var(--ink);
+				white-space: nowrap;
+				position: relative;
+				z-index: 3;
+				flex-shrink: 0;
+				transition: background 0.2s ease;
+			}
+			.promo-strip:hover .promo-cta { background: var(--beige-dark); }
+
+			.promo-arrow {
+				display: inline-block;
+				font-size: 1.2rem;
+				animation: promo-poke 1.4s ease-in-out infinite;
+			}
+			@keyframes promo-poke {
+				0%, 100% { transform: translateX(0); }
+				50%      { transform: translateX(5px); }
+			}
+
 			@keyframes promo-scroll {
 				from { transform: translate3d(0, 0, 0); }
 				to   { transform: translate3d(-25%, 0, 0); }
 			}
 
+			/* ====== HERO NEW BADGE ====== */
+			.new-badge {
+				position: absolute;
+				top: 1rem;
+				right: max(1rem, calc(50% - 28rem));
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 0.15rem;
+				width: clamp(150px, 18vw, 195px);
+				aspect-ratio: 1;
+				background: var(--matcha-deep);
+				color: var(--beige-paper);
+				border: 3px solid var(--ink);
+				border-radius: 50%;
+				text-decoration: none;
+				transform: rotate(8deg);
+				box-shadow: 5px 5px 0 var(--ink), 0 12px 30px rgba(40, 40, 30, 0.22);
+				animation: badge-pop 0.7s 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) both,
+					badge-wobble 5s 1.2s ease-in-out infinite;
+				z-index: 5;
+				padding: 1rem 0.5rem;
+				text-align: center;
+				line-height: 1;
+				transform-origin: center;
+				background-image: radial-gradient(
+					circle at 30% 28%,
+					rgba(246, 239, 217, 0.14),
+					transparent 55%
+				);
+			}
+
+			.new-badge:hover {
+				animation-play-state: paused, paused;
+				transform: rotate(8deg) scale(1.06);
+			}
+
+			.new-badge-tape {
+				position: absolute;
+				top: -10px;
+				left: 50%;
+				transform: translateX(-50%) rotate(-12deg);
+				width: 60px;
+				height: 16px;
+				background: var(--matcha-tape);
+				border: 1px dashed rgba(0, 0, 0, 0.18);
+			}
+
+			.new-badge-kicker {
+				font-family: "Bagel Fat One", sans-serif;
+				font-size: clamp(0.7rem, 1.3vw, 0.82rem);
+				letter-spacing: 0.18em;
+				text-transform: uppercase;
+				color: var(--beige-dark);
+			}
+
+			.new-badge-title {
+				font-family: "Bagel Fat One", sans-serif;
+				font-size: clamp(1.15rem, 2.3vw, 1.55rem);
+				text-transform: lowercase;
+				margin-top: 0.25rem;
+				letter-spacing: -0.02em;
+				color: var(--beige-paper);
+			}
+
+			.new-badge-sub {
+				font-family: "Caveat", cursive;
+				font-weight: 700;
+				font-size: clamp(0.85rem, 1.55vw, 1rem);
+				color: var(--beige-dark);
+				line-height: 1.15;
+				margin-top: 0.3rem;
+			}
+
+			.new-badge-cta {
+				font-family: "Bagel Fat One", sans-serif;
+				font-size: clamp(0.62rem, 1.1vw, 0.74rem);
+				text-transform: lowercase;
+				background: var(--beige-paper);
+				color: var(--ink);
+				padding: 0.3rem 0.65rem 0.2rem;
+				border-radius: 999px;
+				margin-top: 0.5rem;
+				letter-spacing: 0.04em;
+				border: 1.5px solid var(--ink);
+			}
+
+			@keyframes badge-pop {
+				from { transform: rotate(8deg) scale(0.2); opacity: 0; }
+				to   { transform: rotate(8deg) scale(1); opacity: 1; }
+			}
+			@keyframes badge-wobble {
+				0%, 100% { transform: rotate(7deg) translateY(0); }
+				50%      { transform: rotate(10deg) translateY(-3px); }
+			}
+
 			/* ====== HERO ====== */
 			.hero {
+				position: relative;
 				min-height: 86vh;
 				min-height: 86svh;
 				display: grid;
@@ -1283,9 +1472,18 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 
 			/* ====== MOBILE ====== */
 			@media (max-width: 720px) {
-				.hero { min-height: 78svh; }
-				.promo-track { animation-duration: 28s; gap: 1rem; }
-				.promo-item { font-size: 0.85rem; }
+				.hero { min-height: 78svh; padding-top: 6rem; }
+				.promo-track { animation-duration: 26s; gap: 1.1rem; padding: 0.85rem 1rem; }
+				.promo-item { font-size: 0.95rem; }
+				.promo-badge { font-size: 0.85rem; padding: 0.7rem 0.85rem 0.6rem; letter-spacing: 0.06em; }
+				.promo-cta { display: none; }
+				.new-badge {
+					top: 0.8rem;
+					right: 0.8rem;
+					width: clamp(108px, 30vw, 134px);
+					box-shadow: 4px 4px 0 var(--ink), 0 8px 18px rgba(40, 40, 30, 0.18);
+				}
+				.new-badge-sub br { display: none; }
 				/* drop the heavy SVG goo filter on mobile — it kills FPS */
 				.bg-blobs > g { filter: none !important; }
 				.bg-blobs { opacity: 0.55; mix-blend-mode: normal; }
@@ -1321,7 +1519,11 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 				.bg-blob, .riso, .baseline { animation: none !important; }
 				.bg-blobs { opacity: 0.4; }
 				html { scroll-behavior: auto; }
-				.promo-track { animation: none; transform: none; justify-content: center; flex-wrap: wrap; }
+				.promo-strip, .promo-track, .promo-arrow, .promo-badge-dot, .new-badge {
+					animation: none !important;
+				}
+				.promo-track { transform: none; justify-content: center; flex-wrap: wrap; }
+				.new-badge { transform: rotate(8deg); }
 			}
 		</style>
 	</body>
