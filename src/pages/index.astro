@@ -8,6 +8,17 @@ const associes = [
 	{ num: "n°2", nom: "jean serge françois", role: "cravate rose · vp blobs", quote: "je préfère ne pas.", base: "/associe-2" },
 ];
 
+const promoItems = [
+	"✦ nouveau",
+	"la camelote ouvre ses portes",
+	"objets douteux · prix indécents",
+	"−0% partout",
+	"livraison improbable",
+	"retours impossibles",
+	"matteo s'y oppose",
+	"→ visiter le rayon",
+];
+
 const sagesses = [
 	{ text: "l'importance c'est l'essentiel, c'est ça le principal.", style: "stamp" },
 	{ text: "y'a qu'ensemble qu'on sera plusieurs.", style: "torn" },
@@ -84,6 +95,17 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 		</svg>
 
 		<div class="grain" aria-hidden="true" style={`background-image:${grainURI}`}></div>
+
+		<a href="/camelote" class="promo-strip" aria-label="lancement de la camelote — visiter le rayon">
+			<div class="promo-track">
+				{[...promoItems, ...promoItems, ...promoItems, ...promoItems].map((it) => (
+					<>
+						<span class="promo-item">{it}</span>
+						<span class="promo-sep" aria-hidden="true">●</span>
+					</>
+				))}
+			</div>
+		</a>
 
 		<main>
 			<section class="hero">
@@ -170,6 +192,7 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 
 			<footer class="footer">
 				<span class="bubble-tag" id="footer-tag">LE MJSFG · 2026</span>
+				<a href="/camelote" class="merch-tag">→ la camelote</a>
 				<p class="footer-counter">
 					clics au compteur : <span id="click-count">0</span>
 				</p>
@@ -690,6 +713,73 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 				z-index: 1;
 			}
 
+			/* ====== PROMO STRIP ====== */
+			.promo-strip {
+				position: sticky;
+				top: 0;
+				z-index: 50;
+				display: block;
+				background: var(--ink);
+				color: var(--beige-paper);
+				border-bottom: 2.5px solid var(--matcha);
+				overflow: hidden;
+				padding: 0.55rem 0;
+				text-decoration: none;
+				cursor: pointer;
+				box-shadow: 0 3px 0 var(--matcha-deep);
+			}
+
+			.promo-strip::before,
+			.promo-strip::after {
+				content: "";
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				width: 48px;
+				z-index: 2;
+				pointer-events: none;
+			}
+			.promo-strip::before {
+				left: 0;
+				background: linear-gradient(to right, var(--ink), transparent);
+			}
+			.promo-strip::after {
+				right: 0;
+				background: linear-gradient(to left, var(--ink), transparent);
+			}
+
+			.promo-track {
+				display: flex;
+				align-items: center;
+				gap: 1.4rem;
+				width: max-content;
+				animation: promo-scroll 38s linear infinite;
+				will-change: transform;
+			}
+
+			.promo-strip:hover .promo-track {
+				animation-play-state: paused;
+			}
+
+			.promo-item {
+				font-family: "Bagel Fat One", sans-serif;
+				font-size: 0.95rem;
+				letter-spacing: 0.02em;
+				text-transform: lowercase;
+				white-space: nowrap;
+			}
+
+			.promo-sep {
+				color: var(--matcha-light);
+				font-size: 0.7rem;
+				transform: translateY(-1px);
+			}
+
+			@keyframes promo-scroll {
+				from { transform: translate3d(0, 0, 0); }
+				to   { transform: translate3d(-25%, 0, 0); }
+			}
+
 			/* ====== HERO ====== */
 			.hero {
 				min-height: 86vh;
@@ -1160,6 +1250,23 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 				text-align: center;
 			}
 
+			.merch-tag {
+				font-family: "Caveat", cursive;
+				font-weight: 700;
+				font-size: 1.15rem;
+				color: var(--ink);
+				text-decoration: none;
+				background: #d4e3a6;
+				padding: 0.35rem 0.9rem 0.3rem;
+				border: 1.5px dashed var(--matcha);
+				transform: rotate(-2.5deg);
+				display: inline-block;
+				transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+			}
+			.merch-tag:hover {
+				transform: rotate(-2.5deg) translate(-2px, -2px) scale(1.04);
+			}
+
 			.footer-counter span {
 				font-family: "Bagel Fat One", sans-serif;
 				color: var(--ink);
@@ -1177,6 +1284,8 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 			/* ====== MOBILE ====== */
 			@media (max-width: 720px) {
 				.hero { min-height: 78svh; }
+				.promo-track { animation-duration: 28s; gap: 1rem; }
+				.promo-item { font-size: 0.85rem; }
 				/* drop the heavy SVG goo filter on mobile — it kills FPS */
 				.bg-blobs > g { filter: none !important; }
 				.bg-blobs { opacity: 0.55; mix-blend-mode: normal; }
@@ -1212,6 +1321,7 @@ const grainURI = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/200
 				.bg-blob, .riso, .baseline { animation: none !important; }
 				.bg-blobs { opacity: 0.4; }
 				html { scroll-behavior: auto; }
+				.promo-track { animation: none; transform: none; justify-content: center; flex-wrap: wrap; }
 			}
 		</style>
 	</body>
